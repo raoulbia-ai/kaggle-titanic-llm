@@ -2,18 +2,17 @@ from openai import OpenAI
 import json
 import os
 
-# fp='data/test.jsonl'
-fp='data/test_refined.jsonl'
-fp='data/test_refined_iter_3.jsonl'
-fp='data/test_no_nlp.jsonl'
+fp='data/test/jsonl/test_data_for_prediction_v1.jsonl'
 
 # fine-tuned model ID
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0UkfuPZ"
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0X2Bb1O"
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0Yhsxov"
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0o9v5aY"  # iter 3 (Day 2, added socio-economic features)
-# model = "ft:gpt-4o-mini-2024-07-18:personal::A0phAiIu"  # iter 4 trained on balanced dataset and gpt-4o-mini
-model = "ft:gpt-4o-2024-08-06:personal::A0qcQRkL"  # iter 5 trained on balanced dataset and gpt-4o
+# model="ft:gpt-4o-mini-2024-07-18:personal::A0phAiIu"  # iter 4 trained on balanced dataset and gpt-4o-mini
+# model="ft:gpt-4o-2024-08-06:personal::A0qcQRkL"  # iter 5 trained on balanced dataset and gpt-4o
+model="ft:gpt-4o-mini-2024-07-18:personal::A0wPhdQr"  # iter 6 Claude Sonnet v1
+
 
 # Load the formatted JSONL test data (with PassengerId)
 with open(fp, 'r') as jsonl_file:
@@ -42,4 +41,4 @@ for i, entry in enumerate(test_data[:test_batch_size]):
     print("-" * 50)  # Separator for readability
 
 # Optionally, print a message if you want to track when the test finishes
-print("Test batch completed.")
+

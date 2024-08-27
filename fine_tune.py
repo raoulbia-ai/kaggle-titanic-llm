@@ -3,6 +3,13 @@ import time
 
 client = OpenAI()
 
+# Configuration
+base_dir = "data/train/jsonl"
+FILENAME = "train_natural_lang_prompts_with_survival_reasoning_v1.jsonl"
+file_path = f"{base_dir}/{FILENAME}"   
+model = "gpt-4o-mini-2024-07-18"
+
+
 def upload_file(file_path):
     print(f"Uploading file: {file_path}")
     try:
@@ -64,14 +71,6 @@ def start_fine_tuning(file_id, model):
         return None
 
 def main():
-
-    base_dir = "data/train/jsonl"
-    FILENAME = "train_refined_iter_3_balanced.jsonl"
-    file_path = f"{base_dir}/{FILENAME}"
-    
-    model = "gpt-4o-mini-2024-07-18"
-    # model = "gpt-4o-2024-08-06"  # EXPENSIVE!!!
-
 
     # Upload file
     upload_file(file_path)
