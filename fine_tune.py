@@ -64,16 +64,20 @@ def start_fine_tuning(file_id, model):
         return None
 
 def main():
-    file_path = "data/train_refined_iter_3_balanced.jsonl"
-    filename = "train_refined_iter_3_balanced.jsonl"
-    # model = "gpt-4o-mini-2024-07-18"
-    model = "gpt-4o-2024-08-06"
+
+    base_dir = "data/train/jsonl"
+    FILENAME = "train_refined_iter_3_balanced.jsonl"
+    file_path = f"{base_dir}/{FILENAME}"
+    
+    model = "gpt-4o-mini-2024-07-18"
+    # model = "gpt-4o-2024-08-06"  # EXPENSIVE!!!
+
 
     # Upload file
     upload_file(file_path)
 
     # Get the latest file ID
-    file_id = get_latest_file_id(filename)
+    file_id = get_latest_file_id(FILENAME)
     if not file_id:
         return
     print(file_id)

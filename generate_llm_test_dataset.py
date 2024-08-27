@@ -122,18 +122,19 @@ def generate_prompt(row):
     cultural_background = str(row['CulturalBackground'])
     survival_advantage_score = int(row['SurvivalAdvantageScore'])
 
-    prompt = f"Passenger details for Titanic voyage:\n"
-    prompt += f"- A {age}-year-old {gender} {title}\n"
-    prompt += f"- Traveling in {ordinal(pclass)} class, part of the {economic_tier} economic tier\n"
-    prompt += f"- Part of a {family_type} group {has_children}, with a {family_gender_balance} gender balance\n"
-    prompt += f"- Assigned to a {cabin_position} deck cabin\n"
-    prompt += f"- Cultural background: {cultural_background}\n"
-    prompt += f"- Overall survival advantage score: {survival_advantage_score}\n"
+    prompt = f"""
+    Passenger details for Titanic voyage:
+    - A {age}-year-old {gender} {title}
+    - Traveling in {ordinal(pclass)} class, part of the {economic_tier} economic tier
+    - Part of a {family_type} group {has_children}, with a {family_gender_balance} gender balance
+    - Assigned to a {cabin_position} deck cabin
+    - Cultural background: {cultural_background}
+    - Overall survival advantage score: {survival_advantage_score}
 
-    prompt += "\nBased on these factors and your knowledge of the Titanic disaster, "
-    prompt += "determine whether this passenger survived or did not survive. "
-    prompt += "Provide your reasoning, then conclude with a clear statement of 'Survived' or 'Did not survive' on a new line."
-    prompt += "\n\nReasoning:"
+    Based on these factors and your knowledge of the Titanic disaster, determine whether this passenger 
+    survived or did not survive. Provide your reasoning, then conclude with a clear statement of 
+    'Survived' or 'Did not survive' on a new line.
+    """
 
     return prompt
 
@@ -167,15 +168,18 @@ def generate_jsonl(data):
 
 # Main execution
 if __name__ == "__main__":
-    # Load and preprocess the test data
-    test_data = load_and_preprocess_data('data/test.csv')
 
-    # Generate JSONL data for predictions
-    jsonl_data = generate_jsonl(test_data)
+    FILENAME = "test_refined_iter_3.jsonl"
 
-    # Save the JSONL data to a file
-    with open('data/test_refined_iter_3.jsonl', 'w') as jsonl_file:
+    base_dir = 'data/test'
+    input_file = f'{base_dir}/test.csv'
+    output_file = f'{base_dir}/jsonl/{FILENAME}'
+
+    train_data = load_and_preprocess_data(input_file)
+    jsonl_data = generate_jsonl(train_data)
+
+    with open(output_file', 'w') as jsonl_file:
         for entry in jsonl_data:
             jsonl_file.write(json.dumps(entry) + '\n')
 
-    print("Enhanced JSONL file for test data saved to data/test_refined_iter_3.jsonl")
+    print(f"Enhanced JSONL file saved to {output_file}")

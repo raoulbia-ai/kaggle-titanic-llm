@@ -122,18 +122,20 @@ def generate_prompt(row):
     cultural_background = str(row['CulturalBackground'])
     survival_advantage_score = int(row['SurvivalAdvantageScore'])
 
-    prompt = f"Passenger details for Titanic voyage:\n"
-    prompt += f"- A {age}-year-old {gender} {title}\n"
-    prompt += f"- Traveling in {ordinal(pclass)} class, part of the {economic_tier} economic tier\n"
-    prompt += f"- Part of a {family_type} group {has_children}, with a {family_gender_balance} gender balance\n"
-    prompt += f"- Assigned to a {cabin_position} deck cabin\n"
-    prompt += f"- Cultural background: {cultural_background}\n"
-    prompt += f"- Overall survival advantage score: {survival_advantage_score}\n"
+    prompt = f"""
+    Passenger details for Titanic voyage:
+    - A {age}-year-old {gender} {title}
+    - Traveling in {ordinal(pclass)} class, part of the {economic_tier} economic tier
+    - Part of a {family_type} group {has_children}, with a {family_gender_balance} gender balance
+    - Assigned to a {cabin_position} deck cabin
+    - Cultural background: {cultural_background}
+    - Overall survival advantage score: {survival_advantage_score}
 
-    prompt += "\nBased on these factors and your knowledge of the Titanic disaster, "
-    prompt += "determine whether this passenger survived or did not survive. "
-    prompt += "Provide your reasoning, then conclude with a clear statement of 'Survived' or 'Did not survive' on a new line."
-    prompt += "\n\nReasoning:"
+    Based on these factors and your knowledge of the Titanic disaster, determine whether this passenger survived or did not survive. Provide your reasoning, then conclude with a clear statement of 'Survived' or 'Did not survive' on a new line.
+
+    Reasoning:
+    """
+
 
     return prompt
 
@@ -141,38 +143,14 @@ def ordinal(n):
     return "%d%s" % (n,"tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])
 
 def generate_jsonl(data):
-    system_prompt = """You are an AI tasked with predicting the survival of Titanic passengers using all available details (e.g., age, gender, class, family size). Analyze the information and provide a concise reasoning process. Additionally, compute and include an 'Overall survival advantage score,' which quantifies the passenger's likelihood of survival based on historical and sociological factors. The score considers:
+    system_prompt = """You are an assistant that predicts Titanic passenger survival. 
+    Analyze ALL the given information carefully, including age, gender, class, economic tier, family situation, 
+    cabin position, cultural background, and the overall survival advantage score. 
+    Provide your reasoning, considering how each factor typically influenced survival chances. 
+    Ensure your final conclusion ('Survived' or 'Did not survive') is consistent with your reasoning. 
+    Your analysis should be thorough and logical, reflecting the complex interplay of factors that influenced 
+    survival on the Titanic."""
 
-        1. Gender: Women receive a higher score due to the 'women and children first' policy.
-        2. Age: Younger passengers receive a higher score.
-        3. Passenger class: First-class passengers receive a higher score due to proximity to lifeboats and better access to information.
-        4. Economic status: Passengers with higher economic scores (based on class and fare) receive a higher survival advantage.
-        5. Cabin location: Upper deck cabins near lifeboats receive higher scores.
-        6. Family structure: Small family groups receive a slight boost in score.
-
-        The output should be in JSON format with the following structure:
-
-        ```json
-        {
-        'reasoning': 'Brief reasoning here',
-        'confidence': 0.75,
-        'survival_advantage_score': 0.85,
-        'prediction': 'Survived' or 'Did not survive'
-        }
-        ```
-
-        Ensure that the 'prediction' key clearly states either 'Survived' or 'Did not survive,' and the 'survival_advantage_score' reflects the passenger's likelihood based on the above factors."
-
-        ### Suggestions:
-        1. **Refinement of Advantage Score**: If your model has specific formulas for calculating the survival advantage score, those could be embedded as part of the prompt logic for consistent scoring.
-        2. **Optional Feature Weights**: Consider allowing custom weights for the factors listed above (e.g., prioritizing class over age) if you plan to test variations.
-        3. **Score Interpretation**: If the 'survival_advantage_score' is a continuous value, specify any useful thresholds (e.g., scores above 0.7 are more likely to survive).
-
-        ### Questions:
-        1. Should the survival advantage score calculation follow a predefined formula, or do you prefer a more general qualitative assessment?
-        2. Would you like additional reasoning details included, such as breaking down how each factor contributed to the score?
-        3. Is the confidence score based solely on the model’s internal assessment, or should it also factor in the survival advantage score?
-        """
     jsonl_data = []
     for _, row in data.iterrows():
         user_message = generate_prompt(row)
@@ -214,11 +192,18 @@ def generate_jsonl(data):
 
 # Main execution
 if __name__ == "__main__":
-    train_data = load_and_preprocess_data('data/balanced_train.csv')
+
+    FILENAME = "train_refined_iter_3.jsonl"
+
+    base_dir = 'data/test'
+    input_file = f'{base_dir}/test.csv'
+    output_file = f'{base_dir}/jsonl/{FILENAME}'
+
+    train_data = load_and_preprocess_data(input_file)
     jsonl_data = generate_jsonl(train_data)
 
-    with open('data/train_refined_iter_3_balanced.jsonl', 'w') as jsonl_file:
+    with open(output_file', 'w') as jsonl_file:
         for entry in jsonl_data:
             jsonl_file.write(json.dumps(entry) + '\n')
 
-    print("Enhanced JSONL file saved to data/train_refined_iter_3_balanced.jsonl")
+    print(f"Enhanced JSONL file saved to {output_file}")
