@@ -17,7 +17,7 @@ def parse_survival_prediction(response):
         return None
 
 # Load the formatted JSONL test data (with PassengerId)
-with open('data/test_refined.jsonl', 'r') as jsonl_file:
+with open('data/test_no_nlp.jsonl', 'r') as jsonl_file:
     test_data = [json.loads(line) for line in jsonl_file]
 
 # Initialize the OpenAI client
@@ -26,10 +26,12 @@ client = OpenAI()
 # Loop through each prompt and get predictions
 predictions = []
 unclear_predictions = []
-model="ft:gpt-4o-mini-2024-07-18:personal::A0UkfuPZ"  # v1
-model="ft:gpt-4o-mini-2024-07-18:personal::A0X2Bb1O"  # v2
-model="ft:gpt-4o-mini-2024-07-18:personal::A0Yhsxov"  # v3
-
+# model="ft:gpt-4o-mini-2024-07-18:personal::A0UkfuPZ"  # v1
+# model="ft:gpt-4o-mini-2024-07-18:personal::A0X2Bb1O"  # v2
+# model="ft:gpt-4o-mini-2024-07-18:personal::A0Yhsxov"  # v3
+# model="ft:gpt-4o-mini-2024-07-18:personal::A0o9v5aY"  # iter 3 (Day 2, added socio-economic features)
+# model = "ft:gpt-4o-mini-2024-07-18:personal::A0phAiIu"  # iter 4 trained on balanced dataset and gpt-4o-mini
+model = "ft:gpt-4o-2024-08-06:personal::A0qcQRkL"  # iter 5 trained on balanced dataset and gpt-4o
 for entry in test_data:
     try:
         response = client.chat.completions.create(
@@ -65,8 +67,8 @@ if unclear_predictions:
 
 # Convert predictions to a DataFrame and save to submission file
 submission = pd.DataFrame(predictions)
-submission.to_csv('data/submission.csv', index=False)
-print(f"Submission file saved as data/submission.csv with {len(submission)} predictions")
+submission.to_csv('data/submission_test_no_nlp_gpt4o.csv', index=False)
+print(f"Submission file saved as data/submission_test_no_nlp_gpt4o.csv with {len(submission)} predictions")
 
 # Optional: Print out some statistics
 total_predictions = len(submission)

@@ -64,9 +64,10 @@ def start_fine_tuning(file_id, model):
         return None
 
 def main():
-    file_path = "data/train_refined.jsonl"
-    filename = "train_refined.jsonl"
-    model = "gpt-4o-mini-2024-07-18"
+    file_path = "data/train_refined_iter_3_balanced.jsonl"
+    filename = "train_refined_iter_3_balanced.jsonl"
+    # model = "gpt-4o-mini-2024-07-18"
+    model = "gpt-4o-2024-08-06"
 
     # Upload file
     upload_file(file_path)
