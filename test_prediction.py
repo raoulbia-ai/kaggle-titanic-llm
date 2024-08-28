@@ -1,8 +1,10 @@
 from openai import OpenAI
 import json
 import os
+from config import TEST_OUTPUT
 
-fp='data/test/jsonl/test_data_for_prediction_v1.jsonl'
+fp=TEST_OUTPUT
+
 
 # fine-tuned model ID
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0UkfuPZ"
@@ -12,6 +14,7 @@ fp='data/test/jsonl/test_data_for_prediction_v1.jsonl'
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0phAiIu"  # iter 4 trained on balanced dataset and gpt-4o-mini
 # model="ft:gpt-4o-2024-08-06:personal::A0qcQRkL"  # iter 5 trained on balanced dataset and gpt-4o
 model="ft:gpt-4o-mini-2024-07-18:personal::A0wPhdQr"  # iter 6 Claude Sonnet v1
+model="ft:gpt-4o-mini-2024-07-18:personal::A1DsHj9N"  # claude v2
 
 
 # Load the formatted JSONL test data (with PassengerId)

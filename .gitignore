@@ -19,6 +19,8 @@ jspm_packages/
 
 # Optional eslint cache
 .cache/
+tests/__pycache__/
+__pycache__/
 
 # Sentry CLI
 .sentryclirc

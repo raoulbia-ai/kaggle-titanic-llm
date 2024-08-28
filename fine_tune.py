@@ -1,14 +1,13 @@
 from openai import OpenAI
 import time
+from config import BASE_DIR, TRAIN_OUTPUT
 
 client = OpenAI()
 
 # Configuration
-base_dir = "data/train/jsonl"
-FILENAME = "train_natural_lang_prompts_with_survival_reasoning_v1.jsonl"
-file_path = f"{base_dir}/{FILENAME}"   
+FILENAME = TRAIN_OUTPUT.split('/')[-1]  # Extract filename from the full path
+file_path = TRAIN_OUTPUT
 model = "gpt-4o-mini-2024-07-18"
-
 
 def upload_file(file_path):
     print(f"Uploading file: {file_path}")
@@ -36,7 +35,7 @@ def get_latest_file_id(filename):
         if not relevant_files:
             print(f"No file found with name: {filename}")
             return None
-        
+
         latest_file = max(relevant_files, key=lambda x: x.created_at)
         print(f"Latest file ID retrieved: {latest_file.id}")
         return latest_file.id
@@ -71,7 +70,6 @@ def start_fine_tuning(file_id, model):
         return None
 
 def main():
-
     # Upload file
     upload_file(file_path)
 
@@ -80,7 +78,7 @@ def main():
     if not file_id:
         return
     print(file_id)
-    
+
     # Wait for file processing
     if not wait_for_file_processing(file_id):
         return

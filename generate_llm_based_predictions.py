@@ -3,10 +3,10 @@ import pandas as pd
 import json
 import os
 from tqdm import tqdm
+from config import TEST_OUTPUT, SUBMISSION_FILENAME
 
-base_dir = "data/test/jsonl"
-FILENAME = "test_data_for_prediction_v1.jsonl"  # Updated to match our latest version
-SUBMISSION_FILENAME = "submission_claude_sonnet_v1.csv"
+fp=TEST_OUTPUT
+
 
 # fine-tuned model ID
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0UkfuPZ"
@@ -16,6 +16,7 @@ SUBMISSION_FILENAME = "submission_claude_sonnet_v1.csv"
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0phAiIu"  # iter 4 trained on balanced dataset and gpt-4o-mini
 # model="ft:gpt-4o-2024-08-06:personal::A0qcQRkL"  # iter 5 trained on balanced dataset and gpt-4o
 model="ft:gpt-4o-mini-2024-07-18:personal::A0wPhdQr"  # iter 6 Claude Sonnet v1
+model="ft:gpt-4o-mini-2024-07-18:personal::A1DsHj9N"  # claude v2
 
 
 def parse_survival_prediction(response):
@@ -28,7 +29,7 @@ def parse_survival_prediction(response):
         return None
 
 # Load the formatted JSONL test data
-with open(f'{base_dir}/{FILENAME}', 'r') as jsonl_file:
+with open(fp, 'r') as jsonl_file:
     test_data = [json.loads(line) for line in jsonl_file]
 
 # Initialize the OpenAI client
@@ -66,7 +67,10 @@ if unclear_predictions:
     for pid in unclear_predictions:
         predictions.append({"PassengerId": pid, "Survived": 0})
 
+# Ensure the submissions directory exists
+os.makedirs('data/submissions', exist_ok=True)
+
 # Convert predictions to a DataFrame and save to submission file
 submission = pd.DataFrame(predictions)
-submission.to_csv(f'data/submissions/{SUBMISSION_FILENAME}', index=False)
-print(f"Submission file saved as data/submissions/{SUBMISSION_FILENAME} with {len(submission)} predictions")
+submission.to_csv(f'{SUBMISSION_FILENAME}', index=False)
+print(f"Submission file saved as {SUBMISSION_FILENAME} with {len(submission)} predictions")
