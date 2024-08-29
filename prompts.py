@@ -5,36 +5,13 @@ import pandas as pd
 def generate_prompt(passenger, is_train=True):
     narrative = create_narrative(passenger)
     analysis = create_analytical_breakdown(passenger)
-    comparison = create_comparative_analysis(passenger) if is_train else ""
-    uncertainty = identify_uncertainty_factors(passenger)
-
-    prompt = f"""Predict the survival of the following Titanic passenger using step-by-step reasoning:
-
-Passenger Information:
-{narrative}
-
-Analytical Breakdown:
-{analysis}
-
-Historical Context:
-{HISTORICAL_CONTEXT}
-
-{comparison}
-
-{uncertainty}
-
-Please provide your prediction by following these steps:
-
-1. Analyze the key factors affecting this passenger's survival chances.
-2. Compare the passenger's profile to the historical survival rates.
-3. Consider any uncertainty factors and their potential impact.
-4. Weigh the evidence for and against survival.
-5. Make a final prediction and explain your confidence level.
-
-Provide your step-by-step reasoning, concluding with your prediction and confidence level (low, medium, or high)."""
+    
+    # Simplified and clear prompt for the model
+    prompt = f"""You are an AI assistant trained to analyze Titanic passenger data and predict survival outcomes.
+                 {narrative}
+              """
 
     return prompt
-
 
 def create_narrative(passenger):
     age = int(passenger['Age_Original'])
@@ -113,7 +90,6 @@ def create_comparative_analysis(passenger):
     Among {passenger['Sex']} passengers in {['first', 'second', 'third'][passenger['Pclass'] - 1]} class, 
     the historical survival rate was approximately {overall_rate:.0%}. 
     For passengers of similar age ({passenger['AgeBin'].lower()}), the estimated survival rate is about {age_group_rate:.0%}."""
-
 
 def identify_uncertainty_factors(passenger):
     factors = []

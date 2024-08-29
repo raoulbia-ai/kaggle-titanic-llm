@@ -5,19 +5,10 @@ import os
 from tqdm import tqdm
 from config import TEST_OUTPUT, SUBMISSION_FILENAME
 
-fp=TEST_OUTPUT
-
+fp = TEST_OUTPUT
 
 # fine-tuned model ID
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0UkfuPZ"
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0X2Bb1O"
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0Yhsxov"
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0o9v5aY"  # iter 3 (Day 2, added socio-economic features)
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0phAiIu"  # iter 4 trained on balanced dataset and gpt-4o-mini
-# model="ft:gpt-4o-2024-08-06:personal::A0qcQRkL"  # iter 5 trained on balanced dataset and gpt-4o
-model="ft:gpt-4o-mini-2024-07-18:personal::A0wPhdQr"  # iter 6 Claude Sonnet v1
-model="ft:gpt-4o-mini-2024-07-18:personal::A1DsHj9N"  # claude v2
-
+model = "ft:gpt-4o-mini-2024-07-18:personal::A1DsHj9N"  # claude v2
 
 def parse_survival_prediction(response):
     response_text = str(response).lower()
@@ -38,17 +29,24 @@ client = OpenAI()
 # Loop through each prompt and get predictions
 predictions = []
 unclear_predictions = []
+model_responses = []  # New list to store model responses
 
 # Wrap the main loop with tqdm for a progress bar
 for entry in tqdm(test_data, desc="Processing predictions", unit="passenger"):
     try:
         response = client.chat.completions.create(
-            model=model,  # Make sure to uncomment and set the correct model above
+            model=model,
             messages=entry['messages']
         )
 
         predicted_response = response.choices[0].message
         survived = parse_survival_prediction(predicted_response)
+
+        # Store the model's response
+        model_responses.append({
+            "PassengerId": entry["PassengerId"],
+            "ModelResponse": predicted_response.content
+        })
 
         if survived is not None:
             predictions.append({"PassengerId": entry["PassengerId"], "Survived": survived})
@@ -74,3 +72,9 @@ os.makedirs('data/submissions', exist_ok=True)
 submission = pd.DataFrame(predictions)
 submission.to_csv(f'{SUBMISSION_FILENAME}', index=False)
 print(f"Submission file saved as {SUBMISSION_FILENAME} with {len(submission)} predictions")
+
+# Save model responses to a JSON file
+responses_filename = 'data/submissions/model_responses.json'
+with open(responses_filename, 'w') as f:
+    json.dump(model_responses, f, indent=2)
+print(f"Model responses saved to {responses_filename}")

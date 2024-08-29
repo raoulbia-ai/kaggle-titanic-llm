@@ -5,7 +5,7 @@ BASE_DIR = 'data/'
 TRAIN_FILE = os.path.join(BASE_DIR, 'train/train.csv')
 TEST_FILE = os.path.join(BASE_DIR, 'test/test.csv')
 TRAIN_OUTPUT = os.path.join(BASE_DIR, 'train/jsonl/claude_train_v2.jsonl')
-TEST_OUTPUT = os.path.join(BASE_DIR, 'test/jsonl/claude_test_v2.jsonl')
+TEST_OUTPUT = os.path.join(BASE_DIR, 'test/jsonl/test.jsonl')
 SUBMISSION_FILENAME =  os.path.join(BASE_DIR,"submissions/submission_claude_sonnet_v2.csv")
 
 # Data preparation parameters
@@ -26,7 +26,7 @@ protocol was generally followed, particularly in first and second class areas.
 SYSTEM_MESSAGE = """
 You are an AI assistant trained to analyze Titanic passenger data and predict survival outcomes. 
 Consider multiple factors, weigh their importance, and think step-by-step before making a prediction. 
-Provide a clear prediction along with your confidence level based on the given information.
+Provide a step-by-step justification for your prediction.
 """
 
 # Feature importance (for analytical breakdown)

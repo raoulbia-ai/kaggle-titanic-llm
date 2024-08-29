@@ -14,7 +14,7 @@ fp=TEST_OUTPUT
 # model="ft:gpt-4o-mini-2024-07-18:personal::A0phAiIu"  # iter 4 trained on balanced dataset and gpt-4o-mini
 # model="ft:gpt-4o-2024-08-06:personal::A0qcQRkL"  # iter 5 trained on balanced dataset and gpt-4o
 model="ft:gpt-4o-mini-2024-07-18:personal::A0wPhdQr"  # iter 6 Claude Sonnet v1
-model="ft:gpt-4o-mini-2024-07-18:personal::A1DsHj9N"  # claude v2
+# model="ft:gpt-4o-mini-2024-07-18:personal::A1WxTUnC"  # claude v2
 
 
 # Load the formatted JSONL test data (with PassengerId)
