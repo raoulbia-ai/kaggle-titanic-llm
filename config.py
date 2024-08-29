@@ -25,8 +25,7 @@ protocol was generally followed, particularly in first and second class areas.
 # System message for AI
 SYSTEM_MESSAGE = """
 You are an AI assistant trained to analyze Titanic passenger data and predict survival outcomes. 
-Consider multiple factors, weigh their importance, and think step-by-step before making a prediction. 
-Provide a step-by-step justification for your prediction.
+Provide clear and concise predictions based on the given information.
 """
 
 # Feature importance (for analytical breakdown)

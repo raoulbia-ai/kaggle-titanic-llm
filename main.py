@@ -39,6 +39,10 @@ def create_test_jsonl(data, output_file):
                     {
                         "role": "user",
                         "content": generate_prompt(passenger, is_train=False)
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "Prediction: "
                     }
                 ]
             }
