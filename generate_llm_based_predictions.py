@@ -3,12 +3,14 @@ import pandas as pd
 import json
 import os
 from tqdm import tqdm
-from config import TEST_OUTPUT, SUBMISSION_FILENAME
+from config import TEST_OUTPUT, SUBMISSION_FILENAME, MODEL_RESPONSES
 
 fp = TEST_OUTPUT
 
+model="gpt-4o-mini-2024-07-18"  # baseline model
+
 # fine-tuned model ID
-model = "ft:gpt-4o-mini-2024-07-18:personal::A1DsHj9N"  # claude v2
+# model = "ft:gpt-4o-mini-2024-07-18:personal::A0wPhdQr"  # claude v2
 
 def parse_survival_prediction(response):
     response_text = str(response).lower()
@@ -74,7 +76,7 @@ submission.to_csv(f'{SUBMISSION_FILENAME}', index=False)
 print(f"Submission file saved as {SUBMISSION_FILENAME} with {len(submission)} predictions")
 
 # Save model responses to a JSON file
-responses_filename = 'data/submissions/model_responses.json'
+responses_filename = MODEL_RESPONSES
 with open(responses_filename, 'w') as f:
     json.dump(model_responses, f, indent=2)
 print(f"Model responses saved to {responses_filename}")

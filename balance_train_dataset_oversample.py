@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 from sklearn.utils import resample
+from data_prep import prepare_data
 
-# Load the data
-data = pd.read_csv('data/train.csv')
+# Load and prepare the data
+data = prepare_data('data/train/train.csv', is_train=True)
 
 def selective_oversample(df, condition, n_samples):
     subset = df[condition]
@@ -20,7 +21,8 @@ balanced_data = pd.DataFrame()
 
 # 1. Women and children in first and second class (high survival rate)
 balanced_data = pd.concat([balanced_data, selective_oversample(
-    data, (data['Survived'] == 1) & (data['Sex'] == 'female') & (data['Pclass'].isin([1, 2])), 
+    data, (data['Survived'] == 1) & (data['Sex'] == 'female') & (data['Pclass'].isin([1, 2])) | 
+          (data['Survived'] == 1) & (data['AgeBin'] == 'Child') & (data['Pclass'].isin([1, 2])), 
     n_samples=int(original_non_survivors * 0.2))])
 
 # 2. Men in first class (moderate survival rate)
@@ -30,12 +32,12 @@ balanced_data = pd.concat([balanced_data, selective_oversample(
 
 # 3. Women and children in third class (lower survival rate)
 balanced_data = pd.concat([balanced_data, selective_oversample(
-    data, (data['Survived'] == 1) & ((data['Sex'] == 'female') | (data['Age'] < 18)) & (data['Pclass'] == 3), 
+    data, (data['Survived'] == 1) & ((data['Sex'] == 'female') | (data['AgeBin'] == 'Child')) & (data['Pclass'] == 3), 
     n_samples=int(original_non_survivors * 0.1))])
 
-# 4. Crew members (some survived)
+# 4. Passengers with family (some survived)
 balanced_data = pd.concat([balanced_data, selective_oversample(
-    data, (data['Survived'] == 1) & (data['Fare'] == 0), 
+    data, (data['Survived'] == 1) & (data['FamilySize'] > 1), 
     n_samples=int(original_non_survivors * 0.05))])
 
 # 5. Add remaining survivors to reach balance
@@ -54,9 +56,9 @@ balanced_data = balanced_data.sample(frac=1, random_state=42).reset_index(drop=T
 print(balanced_data['Survived'].value_counts())
 
 # Save the balanced dataset
-balanced_data.to_csv('data/balanced_train.csv', index=False)
+balanced_data.to_csv('data/train/balanced_train.csv', index=False)
 
-print("Historically balanced dataset saved as 'historically_balanced_train.csv'")
+print("Historically balanced dataset saved as 'balanced_train.csv'")
 
 # Additional statistics
 print("\nClass distribution in balanced dataset:")
@@ -65,4 +67,10 @@ print(balanced_data['Pclass'].value_counts(normalize=True))
 print("\nGender distribution in balanced dataset:")
 print(balanced_data['Sex'].value_counts(normalize=True))
 
-print("\nAverage age in balanced dataset:", balanced_data['Age'].mean())
+print("\nAge distribution in balanced dataset:")
+print(balanced_data['AgeBin'].value_counts(normalize=True))
+
+print("\nAverage family size in balanced dataset:", balanced_data['FamilySize'].mean())
+
+print("\nSocial Status distribution in balanced dataset:")
+print(balanced_data['SocialStatus'].value_counts(normalize=True).head())

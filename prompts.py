@@ -1,6 +1,23 @@
-from config import HISTORICAL_CONTEXT, FEATURE_IMPORTANCE
+from config import FEATURE_IMPORTANCE
 import numpy as np
 import pandas as pd
+
+HISTORICAL_CONTEXT = """
+Inconsistent Protocols: The "women and children first" protocol was applied inconsistently. First Officer William Murdoch 
+interpreted it to mean women and children first, while Second Officer Charles Lightoller adhered strictly to that, 
+leading to disparities in survival rates.
+Panic and Delays: Panic erupted among passengers, especially in third class, where many were unaware of the severity of 
+the situation and struggled to reach the lifeboats due to flooding and confusion.
+Musicians' Role: none survived."""
+
+# System message for AI
+SYSTEM_MESSAGE = """You are an assistant that predicts Titanic passenger survival. 
+    Analyze ALL the given information carefully, including age, gender, class, economic tier, family situation, 
+    cabin position, cultural background, and the overall survival advantage score. 
+    Provide your reasoning, considering how each factor typically influenced survival chances. 
+    Ensure your final conclusion ('Survived' or 'Did not survive') is consistent with your reasoning. 
+    Your analysis should be thorough and logical, reflecting the complex interplay of factors that influenced 
+    survival on the Titanic."""
 
 def generate_prompt(passenger, is_train=True):
     narrative = create_narrative(passenger)
@@ -128,3 +145,30 @@ def identify_uncertainty_factors(passenger):
         return "Uncertainty factors: " + " ".join(factors)
     else:
         return "No significant uncertainty factors identified."
+
+def create_assistant_message(passenger):
+    survived = "survived" if passenger['Survived'] == 1 else "did not survive"
+    reasons = []
+    
+    if passenger['Sex'] == 'female':
+        reasons.append("being female generally increased survival chances")
+    else:
+        reasons.append("being male generally reduced survival chances")
+    
+    if passenger['Pclass'] == 1:
+        reasons.append("first-class passengers had better survival rates")
+    elif passenger['Pclass'] == 3:
+        reasons.append("third-class passengers had lower survival rates")
+    
+    if passenger['AgeBin'] in ['Child', 'Teenager']:
+        reasons.append("children were often prioritized for rescue")
+    
+    if passenger['FareBin'] in ['High', 'Very High']:
+        reasons.append("passengers with expensive tickets may have had better access to lifeboats")
+    
+    if passenger['FamilySize'] > 1:
+        reasons.append(f"traveling with {passenger['FamilySize'] - 1} family member(s) could have influenced survival")
+    
+    reasoning = " and ".join(reasons)
+    return f"Based on the information provided, {passenger['Title']} {passenger['LastName']} {survived}. " \
+           f"Reasoning: {reasoning.capitalize() if reasoning else 'Multiple factors influenced survival rates, including class, gender, age, and location on the ship.'}"

@@ -6,15 +6,11 @@ from config import TEST_OUTPUT
 fp=TEST_OUTPUT
 
 
+model="gpt-4o-mini-2024-07-18"  # baseline model
+
 # fine-tuned model ID
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0UkfuPZ"
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0X2Bb1O"
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0Yhsxov"
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0o9v5aY"  # iter 3 (Day 2, added socio-economic features)
-# model="ft:gpt-4o-mini-2024-07-18:personal::A0phAiIu"  # iter 4 trained on balanced dataset and gpt-4o-mini
-# model="ft:gpt-4o-2024-08-06:personal::A0qcQRkL"  # iter 5 trained on balanced dataset and gpt-4o
-model="ft:gpt-4o-mini-2024-07-18:personal::A0wPhdQr"  # iter 6 Claude Sonnet v1
-# model="ft:gpt-4o-mini-2024-07-18:personal::A1WxTUnC"  # claude v2
+# model="ft:gpt-4o-mini-2024-07-18:personal::A1fNulFL"  # claude v2
+
 
 
 # Load the formatted JSONL test data (with PassengerId)

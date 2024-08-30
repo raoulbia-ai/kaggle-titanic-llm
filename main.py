@@ -1,8 +1,8 @@
 import json
 import pandas as pd
 from data_prep import prepare_data
-from prompts import generate_prompt
-from config import TRAIN_FILE, TEST_FILE, TRAIN_OUTPUT, TEST_OUTPUT, SYSTEM_MESSAGE
+from prompts import generate_prompt, create_assistant_message, SYSTEM_MESSAGE
+from config import TRAIN_FILE, TEST_FILE, TRAIN_OUTPUT, TEST_OUTPUT
 
 def create_train_jsonl(data, output_file):
     with open(output_file, 'w') as f:
@@ -19,7 +19,7 @@ def create_train_jsonl(data, output_file):
                     },
                     {
                         "role": "assistant",
-                        "content": f"Prediction: The passenger {'survived' if passenger['Survived'] == 1 else 'did not survive'} the Titanic disaster."
+                        "content": create_assistant_message(passenger)
                     }
                 ]
             }
@@ -39,15 +39,13 @@ def create_test_jsonl(data, output_file):
                     {
                         "role": "user",
                         "content": generate_prompt(passenger, is_train=False)
-                    },
-                    {
-                        "role": "assistant",
-                        "content": "Prediction: "
                     }
                 ]
             }
             json.dump(entry, f)
             f.write('\n')
+
+
 
 def main():
     # Prepare and process training data

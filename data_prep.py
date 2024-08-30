@@ -52,4 +52,8 @@ def prepare_data(file_path, is_train=True):
         # For test data, we'll use a placeholder value
         df['FamilySurvivalRate'] = -1
     
+    if not is_train:
+        # For test data, we'll use a placeholder value for Survived
+        df['Survived'] = -1
+
     return df
